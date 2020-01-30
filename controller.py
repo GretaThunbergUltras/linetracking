@@ -52,9 +52,6 @@ class Controller:
         derivative = (error - self.lastError) * self.kd
 
         pidReturn = proportional + integral + derivative
-        print("value: "+str(value)+" | error: "+str(error)+" | lastError: "+str(self.lastError)+" | totalError: "+str(self.totalError))
-        print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
-        print("---------------------------------------------")
 
         if(error == 0):
             self.totalError = 0
@@ -62,6 +59,10 @@ class Controller:
             self.totalError = 50
         if(pidReturn > 100):
             pidReturn = 100
+
+        print("value: "+str(value)+" | error: "+str(error)+" | lastError: "+str(self.lastError)+" | totalError: "+str(self.totalError))
+        print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
+        print("---------------------------------------------")
 
         self.lastError = error
         return pidReturn
