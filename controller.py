@@ -9,9 +9,9 @@ class Controller:
     _y2 = 380.0
 
     #PID constants
-    kp = 1
+    kp = 2
     ki = 0.1
-    kd = 0.2
+    kd = 0.4
 
     lastError = 0
     totalError = 0
@@ -60,6 +60,8 @@ class Controller:
             self.totalError = 0
         if(self.totalError > 50):
             self.totalError = 50
+        if(pidReturn > 100):
+            pidReturn = 100
 
         self.lastError = error
         return pidReturn
