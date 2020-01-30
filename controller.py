@@ -56,5 +56,10 @@ class Controller:
         print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
         print("---------------------------------------------")
 
+        if(error == 0):
+            self.totalError = 0
+        if(self.totalError > 50):
+            self.totalError = 50
+
         self.lastError = error
         return pidReturn
