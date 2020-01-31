@@ -9,12 +9,12 @@ class Controller:
     _x2 = 320.0
     _y2 = 380.0
 
-    centerpoint = 75
+    centerpoint = 85
 
     #PID constants
-    kp = 1
-    ki = 0.001
-    kd = 0.2
+    kp = 1.8
+    ki = 0.002
+    kd = 0.6
 
     lastError = 0
     totalError = 0
@@ -76,10 +76,14 @@ class Controller:
 
         if(error == 0):
             self.totalError = 0
-        if(self.totalError > 50):
-            self.totalError = 50
+        if(self.totalError > 100):
+            self.totalError = 100
+        if(self.totalError < -100):
+            self.totalError = -100
         if(pidReturn > 100):
             pidReturn = 100
+        if(pidReturn < -100):
+            pidReturn = -100
 
         print("value: "+str(value)+" | error: "+str(error)+" | lastError: "+str(self.lastError)+" | totalError: "+str(self.totalError))
         print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
