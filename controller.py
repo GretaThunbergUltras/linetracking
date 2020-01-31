@@ -12,18 +12,23 @@ class Controller:
     centerpoint = 75
 
     #PID constants
-    kp = 2
-    ki = 0.01
-    kd = 0.4
+    kp = 1
+    ki = 0.001
+    kd = 0.2
 
     lastError = 0
     totalError = 0
+    lastValue = 0
 
     def __init__(self):
         self.bot = Bot()
+        self.bot.calibrate()
         self.bot.drive_steer(0)
         self.bot.drive_power(30)
 
+    def __del__(self):
+        self.bot.drive_steer(0)
+        self.bot.drive_power(0)
     '''
     def controller(x1:float, y1:float, x2:float, y2:float):
         basic = basic_compensation(x1,y1,x2,y2)
@@ -53,6 +58,7 @@ class Controller:
         return 0
     '''
     def pid(self,value:int)->float:
+        #TODO: test without abs
         error = abs(value-self.centerpoint)
         self.totalError += error
 
@@ -61,6 +67,11 @@ class Controller:
         derivative = (error - self.lastError) * self.kd
 
         pidReturn = proportional + integral + derivative
+
+        #set lastError and totalError to 0 when value passes centerpoint
+        if((self.lastValue>self.centerpoint and value<self.centerpoint)or(self.lastValue<self.centerpoint and value>self.centerpoint)):
+            self.lastError = 0
+            self.totalError = 0
 
         if(error == 0):
             self.totalError = 0
@@ -74,6 +85,7 @@ class Controller:
         print("---------------------------------------------")
 
         self.lastError = error
+        self.lastValue = value
         return pidReturn
 
     def controll(self,value:int):
