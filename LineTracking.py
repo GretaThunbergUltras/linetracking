@@ -56,5 +56,4 @@ if __name__ == "__main__":
     controller = Controller()
     while True:
         val = lt.track_line()
-        x = controller.pid(val)
-        print(x)
+        controller.controll(val)

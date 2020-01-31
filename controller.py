@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import math
+from botlib.bot import Bot
 
 class Controller:
     _x1 = 320.0
@@ -8,13 +9,21 @@ class Controller:
     _x2 = 320.0
     _y2 = 380.0
 
+    centerpoint = 75
+
     #PID constants
     kp = 2
-    ki = 0.1
+    ki = 0.01
     kd = 0.4
 
     lastError = 0
     totalError = 0
+
+    def __init__(self):
+        self.bot = Bot()
+        self.bot.drive_steer(0)
+        self.bot.drive_power(30)
+
     '''
     def controller(x1:float, y1:float, x2:float, y2:float):
         basic = basic_compensation(x1,y1,x2,y2)
@@ -44,7 +53,7 @@ class Controller:
         return 0
     '''
     def pid(self,value:int)->float:
-        error = abs(value-75)
+        error = abs(value-self.centerpoint)
         self.totalError += error
 
         proportional = error * self.kp
@@ -66,3 +75,12 @@ class Controller:
 
         self.lastError = error
         return pidReturn
+
+    def controll(self,value:int):
+        PID = self.pid(value)
+
+        #change steering angle
+        if(value>self.centerpoint):
+            self.bot.drive_steer(-PID/100)
+        else:
+            self.bot.drive_steer(PID/100)
