@@ -59,7 +59,8 @@ class Controller:
     '''
     def pid(self,value:int)->float:
         #TODO: test without abs
-        error = abs(value-self.centerpoint)
+        #error = abs(value-self.centerpoint)
+        error = value-self.centerpoint
         self.totalError += error
 
         proportional = error * self.kp
@@ -92,7 +93,10 @@ class Controller:
         PID = self.pid(value)
 
         #change steering angle
+        '''
         if(value>self.centerpoint):
             self.bot.drive_steer(-PID/100)
         else:
             self.bot.drive_steer(PID/100)
+        '''
+        self.bot.drive_steer(PID/100)
