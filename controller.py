@@ -58,8 +58,8 @@ class Controller:
         return 0
     '''
     def pid(self,value:int)->float:
-        #TODO: test without abs
-        #error = abs(value-self.centerpoint)
+        if(value == None or value == -1):
+            error = lastError
         error = value-self.centerpoint
         self.totalError += error
 
@@ -84,7 +84,6 @@ class Controller:
             pidReturn = 100
         if(pidReturn < -100):
             pidReturn = -100
-
         print("value: "+str(value)+" | error: "+str(error)+" | lastError: "+str(self.lastError)+" | totalError: "+str(self.totalError))
         print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
         print("---------------------------------------------")
