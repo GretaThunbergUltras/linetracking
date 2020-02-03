@@ -50,7 +50,7 @@ class LineTracking():
                 print("Turn Left")
             print(cx)
             return cx
-
+	return -1
 if __name__ == "__main__":
     lt = LineTracking()
     controller = Controller()
