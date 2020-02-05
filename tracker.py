@@ -8,7 +8,7 @@ class LineTracker(object):
         self.capture = cam
 
     def _set_resolution(self, width, height):
-        self.resolution = (width, height)
+        self.resolution = (int(width), int(height))
         self.roi_w = self.resolution[0]//3
         self.roi_h = self.resolution[1]//2
         self.roi_x = self.resolution[0]//2 - self.roi_w//2
