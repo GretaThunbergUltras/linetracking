@@ -1,5 +1,6 @@
+import cv2
 import numpy as np
-#import cv2
+
 from .tracker import LineTracker
 
 class LRTracker(LineTracker):
@@ -8,7 +9,7 @@ class LRTracker(LineTracker):
 
     def track_line(self):
         roi = self._get_frame()
-        if not frame:
+        if roi is None:
             return None
 
         # Convert to grayscale
@@ -39,7 +40,7 @@ class LRTracker(LineTracker):
 
             cv2.drawContours(roi, contours, -1, (0,255,0), 1)
 
-            cv2.imshow('Preview', frame)
+            cv2.imshow('Preview', roi)
 
             if cx >= 100:
                 print("Turn Right!")

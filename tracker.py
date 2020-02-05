@@ -1,14 +1,11 @@
 import cv2
 
 class LineTracker(object):
-    def __init__(self, cap):
-        self._set_resolution(cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    def __init__(self, cam):
+        width, height = cam.resolution()
+        self._set_resolution(width, height)
 
-        self.capture = cap
-        
-        # TODO: use constant names
-        self.capture.set(3, 160)
-        self.capture.set(4, 120)
+        self.capture = cam
 
     def _set_resolution(self, width, height):
         self.resolution = (width, height)
@@ -21,8 +18,8 @@ class LineTracker(object):
         self.roi_y2 = self.roi_y + self.roi_h
 
     def _get_frame(self):
-        ret, frame = self.capture.read()
-        if not ret:
+        frame = self.capture.read()
+        if frame is None:
             return None
         return frame[self.roi_y:self.roi_y2, self.roi_x:self.roi_x2]
 

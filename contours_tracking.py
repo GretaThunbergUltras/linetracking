@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 from .tracker import LineTracker
 
@@ -7,7 +8,7 @@ class ContourTracker(LineTracker):
 
     def track_line(self):
         roi = self._get_frame()
-        if not roi:
+        if roi is None:
             return None
 
         # Convert to grayscale
@@ -17,7 +18,7 @@ class ContourTracker(LineTracker):
         blur = cv2.GaussianBlur(gray,(5,5),0)
 
         # Color thresholding
-        ret,thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
+        ret, thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
 
         # Find the contours of the roi
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
