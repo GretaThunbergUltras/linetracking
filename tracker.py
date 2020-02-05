@@ -26,5 +26,11 @@ class LineTracker(object):
             return None
         return frame[self.roi_y:self.roi_y2, self.roi_x:self.roi_x2]
 
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.track_line()
+
     def track_line(self):
         pass
