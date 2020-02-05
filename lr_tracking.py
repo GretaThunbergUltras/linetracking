@@ -1,6 +1,6 @@
 import numpy as np
 #import cv2
-from tracker import LineTracker
+from .tracker import LineTracker
 
 class LRTracker(LineTracker):
     def __init__(self, cap):

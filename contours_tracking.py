@@ -1,5 +1,5 @@
 import numpy as np
-from tracker import LineTracker
+from .tracker import LineTracker
 
 class ContourTracker(LineTracker):
     def __init__(self, cap):
