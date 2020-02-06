@@ -18,17 +18,19 @@ class Camera(object):
 
 def main():
     cam = Camera()
-    
+
     if '--lr' in sys.argv:
         from lib import LRTracker
         ln = LRTracker(cam)
     else:
         from lib import ContourTracker
         ln = ContourTracker(cam)
+
+    if '--preview' in sys.argv:
+        ln.preview(True)
     
     while True:
         print(ln.track_line())
-        time.sleep(0.5)
         cv2.waitKey(1)
     
     cv2.closeAllWindows()

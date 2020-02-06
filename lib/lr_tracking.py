@@ -1,7 +1,7 @@
+from .tracker import LineTracker
+
 import cv2
 import numpy as np
-
-from .tracker import LineTracker
 
 class LRTracker(LineTracker):
     def __init__(self, cap):
@@ -35,12 +35,13 @@ class LRTracker(LineTracker):
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
 
-            cv2.line(roi,(cx,0),(cx,720),(255,0,0),1)
-            cv2.line(roi,(0,cy),(1280,cy),(255,0,0),1)
+            if self._preview:
+                cv2.line(roi,(cx,0),(cx,720),(255,0,0),1)
+                cv2.line(roi,(0,cy),(1280,cy),(255,0,0),1)
 
-            cv2.drawContours(roi, contours, -1, (0,255,0), 1)
+                cv2.drawContours(roi, contours, -1, (0,255,0), 1)
 
-            cv2.imshow('Preview', roi)
+                cv2.imshow('Preview', roi)
 
             if cx >= 100:
                 print("Turn Right!")

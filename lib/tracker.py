@@ -5,7 +5,8 @@ class LineTracker(object):
         width, height = cam.resolution()
         self._set_resolution(width, height)
 
-        self.capture = cam
+        self._capture = cam
+        self._preview = False
 
     def _set_resolution(self, width, height):
         self.resolution = (int(width), int(height))
@@ -18,7 +19,7 @@ class LineTracker(object):
         self.roi_y2 = self.roi_y + self.roi_h
 
     def _get_frame(self):
-        frame = self.capture.read()
+        frame = self._capture.read()
         if frame is None:
             return None
         return frame[self.roi_y:self.roi_y2, self.roi_x:self.roi_x2]
@@ -28,6 +29,9 @@ class LineTracker(object):
 
     def __next__(self):
         return self.track_line()
+
+    def preview(self, active: bool):
+        self._preview = active
 
     def track_line(self):
         pass
