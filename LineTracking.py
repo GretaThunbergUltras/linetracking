@@ -2,10 +2,20 @@ import numpy as np
 import cv2
 from controller import Controller
 
+RESOLUTION = (800, 600)
+# (x, y, w, h)
+ROI_W = RESOLUTION[0]//3
+ROI_H = RESOLUTION[1]//2
+ROI_X = RESOLUTION[0]//2 - ROI_W//2
+ROI_Y = RESOLUTION[1] - ROI_H
+
+ROI_X2 = ROI_X + ROI_W
+ROI_Y2 = ROI_Y + ROI_H
+
 class LineTracking():
     def __init__(self):
         print("Init")
-        self.video_capture = cv2.VideoCapture(0)
+        self.video_capture = cv2.VideoCapture('simpleline.mp4')
         self.video_capture.set(3, 160)
         self.video_capture.set(4, 120)
 
@@ -15,7 +25,8 @@ class LineTracking():
         ret, frame = self.video_capture.read()
 
         # Crop the image
-        crop_img = frame[60:120, 0:160]
+        crop_img = frame[ROI_Y:ROI_Y2, ROI_X:ROI_X2]
+
 
         # Convert to grayscale
         gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
@@ -34,6 +45,9 @@ class LineTracking():
             c = max(contours, key=cv2.contourArea)
             M = cv2.moments(c)
 
+            if M['m00'] == 0:
+                return None
+
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
 
@@ -41,6 +55,8 @@ class LineTracking():
             cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
 
             cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
+
+            cv2.imshow('Preview', crop_img)
 
             if cx >= 100:
                 print("Turn Right!")
@@ -56,4 +72,7 @@ if __name__ == "__main__":
     controller = Controller()
     while True:
         val = lt.track_line()
-        controller.controll(val)
+        if val:
+            controller.controll(val)
+        cv2.waitKey(0)
+    cv2.destroyAllWindows()

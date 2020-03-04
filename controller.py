@@ -1,7 +1,20 @@
 #!/usr/bin/python3
 
 import math
-from botlib.bot import Bot
+# from botlib.bot import Bot
+
+class Bot:
+    def __init__(self):
+        pass
+
+    def calibrate(self):
+        pass
+
+    def drive_power(self, pval):
+        pass
+
+    def drive_steer(self, pval):
+        pass
 
 class Controller:
     _x1 = 320.0
@@ -84,9 +97,9 @@ class Controller:
             pidReturn = 100
         if(pidReturn < -100):
             pidReturn = -100
-        print("value: "+str(value)+" | error: "+str(error)+" | lastError: "+str(self.lastError)+" | totalError: "+str(self.totalError))
-        print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
-        print("---------------------------------------------")
+
+        # print("value: "+str(value)+" | error: "+str(error)+" | lastError: "+str(self.lastError)+" | totalError: "+str(self.totalError))
+        # print("PID: "+str(pidReturn)+" | P: "+str(proportional)+" | I: "+str(integral)+" | D: "+str(derivative))
 
         self.lastError = error
         self.lastValue = value
