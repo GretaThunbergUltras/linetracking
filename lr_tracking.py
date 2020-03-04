@@ -1,43 +1,19 @@
 import numpy as np
-import cv2
+#import cv2
 from controller import Controller
+from tracker import LineTracker
 
-# RESOLUTION = (800, 600)
-
-# (x, y, w, h)
-class LineTracking():
+class LRTracker(LineTracker):
     def __init__(self, cap):
-        print("Init")
-
-        self.set_resolution(cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-        self.video_capture = cap
-        self.video_capture.set(3, 160)
-        self.video_capture.set(4, 120)
-
-    def set_resolution(self, width, height):
-        self.resolution = (width, height)
-        self.roi_w = self.resolution[0]//3
-        self.roi_h = self.resolution[1]//2
-        self.roi_x = self.resolution[0]//2 - self.roi_w//2
-        self.roi_y = self.resolution[1] - self.roi_h
-        
-        self.roi_x2 = self.roi_x + self.roi_w
-        self.roi_y2 = self.roi_y + self.roi_h
+        super().__init__(cap)
 
     def track_line(self):
-        # Capture the frames
-        print("Get frame")
-        ret, frame = self.video_capture.read()
-
-        if not ret:
+        roi = self._get_frame()
+        if not frame:
             return None
 
-        # Crop the image
-        crop_img = frame[self.roi_y:self.roi_y2, self.roi_x:self.roi_x2]
-
         # Convert to grayscale
-        gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 
         # Gaussian blur
         blur = cv2.GaussianBlur(gray,(5,5),0)
@@ -59,10 +35,10 @@ class LineTracking():
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
 
-            cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
-            cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
+            cv2.line(roi,(cx,0),(cx,720),(255,0,0),1)
+            cv2.line(roi,(0,cy),(1280,cy),(255,0,0),1)
 
-            cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
+            cv2.drawContours(roi, contours, -1, (0,255,0), 1)
 
             cv2.imshow('Preview', frame)
 
@@ -75,14 +51,3 @@ class LineTracking():
             print(cx)
             return cx
         return -1
-
-if __name__ == "__main__":
-    cap = cv2.VideoCapture(0)
-    lt = LineTracking()
-    controller = Controller()
-    while True:
-        val = lt.track_line()
-        if val:
-            controller.controll(val)
-        cv2.waitKey(0)
-    cv2.destroyAllWindows()
