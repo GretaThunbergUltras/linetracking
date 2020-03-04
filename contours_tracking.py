@@ -1,8 +1,7 @@
 import numpy as np
-from controller import Controller
 from tracker import LineTracker
 
-class LineTracking(LineTracker):
+class ContourTracker(LineTracker):
     def __init__(self, cap):
         super().__init__(cap)
 

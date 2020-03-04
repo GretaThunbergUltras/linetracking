@@ -1,6 +1,5 @@
 import numpy as np
 #import cv2
-from controller import Controller
 from tracker import LineTracker
 
 class LRTracker(LineTracker):
