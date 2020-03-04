@@ -2,31 +2,39 @@ import numpy as np
 import cv2
 from controller import Controller
 
-RESOLUTION = (800, 600)
+# RESOLUTION = (800, 600)
+
 # (x, y, w, h)
-ROI_W = RESOLUTION[0]//3
-ROI_H = RESOLUTION[1]//2
-ROI_X = RESOLUTION[0]//2 - ROI_W//2
-ROI_Y = RESOLUTION[1] - ROI_H
-
-ROI_X2 = ROI_X + ROI_W
-ROI_Y2 = ROI_Y + ROI_H
-
 class LineTracking():
-    def __init__(self):
+    def __init__(self, cap):
         print("Init")
-        self.video_capture = cv2.VideoCapture('simpleline.mp4')
+
+        self.set_resolution(cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        self.video_capture = cap
         self.video_capture.set(3, 160)
         self.video_capture.set(4, 120)
+
+    def set_resolution(self, width, height):
+        self.resolution = (width, height)
+        self.roi_w = self.resolution[0]//3
+        self.roi_h = self.resolution[1]//2
+        self.roi_x = self.resolution[0]//2 - self.roi_w//2
+        self.roi_y = self.resolution[1] - self.roi_h
+        
+        self.roi_x2 = self.roi_x + self.roi_w
+        self.roi_y2 = self.roi_y + self.roi_h
 
     def track_line(self):
         # Capture the frames
         print("Get frame")
         ret, frame = self.video_capture.read()
 
-        # Crop the image
-        crop_img = frame[ROI_Y:ROI_Y2, ROI_X:ROI_X2]
+        if not ret:
+            return None
 
+        # Crop the image
+        crop_img = frame[self.roi_y:self.roi_y2, self.roi_x:self.roi_x2]
 
         # Convert to grayscale
         gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
@@ -35,12 +43,12 @@ class LineTracking():
         blur = cv2.GaussianBlur(gray,(5,5),0)
 
         # Color thresholding
-        ret,thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
+        ret, thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
 
         # Find the contours of the frame
         contours, hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-        
-	# Find the biggest contour (if detected)
+
+        # Find the biggest contour (if detected)
         if len(contours) > 0:
             c = max(contours, key=cv2.contourArea)
             M = cv2.moments(c)
@@ -56,7 +64,7 @@ class LineTracking():
 
             cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
 
-            cv2.imshow('Preview', crop_img)
+            cv2.imshow('Preview', frame)
 
             if cx >= 100:
                 print("Turn Right!")
@@ -66,8 +74,10 @@ class LineTracking():
                 print("Turn Left")
             print(cx)
             return cx
-	return -1
+        return -1
+
 if __name__ == "__main__":
+    cap = cv2.VideoCapture(0)
     lt = LineTracking()
     controller = Controller()
     while True:

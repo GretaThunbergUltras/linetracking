@@ -1,12 +1,18 @@
+import sys
+
 import cv2
 
-test = cv2.VideoCapture(0)
+if '--lr' in sys.argv:
+    from lr_tracking import LineTracking
+else:
+    from contours_tracking import LineTracking
+
+cap = cv2.VideoCapture('simpleline.mp4')
+ln = LineTracking(cap)
 
 while True:
-	ret, image = test.read()
-	cv2.imshow("please", image)
+    ln.track_line()
+    cv2.waitKey(1)
 
-	if cv2.waitKey(1) == 'q':
-		break
 test.release()
 cv2.closeAllWindows()
